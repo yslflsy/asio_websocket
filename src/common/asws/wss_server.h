@@ -157,7 +157,17 @@ public:
 
 	virtual ~wss_listen_server() {}
 
-
+	socket_type  GetClient(uint_fast64_t clientID) { return wss_server_base::find(clientID); }
+	virtual bool sendPacketToClient(uint_fast64_t clientID, ws_message &msg)
+	{
+		socket_type obj = GetClient(clientID);
+		if (obj != nullptr)
+		{
+			obj->sendPacket(msg);
+			return true;
+		}
+		return false;
+	}
 protected:
 	service_pump & m_service_pump;
 

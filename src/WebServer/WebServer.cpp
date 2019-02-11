@@ -6,7 +6,7 @@
 //
 #include "../common/asws/ws_common.h"
 
-#define WEB_SOCKET_SSL 1
+#define WEB_SOCKET_SSL 0
 #define DEFAULT_WEB_IP   "0.0.0.0"
 #define DEFAULT_WEB_PORT 3001
 
