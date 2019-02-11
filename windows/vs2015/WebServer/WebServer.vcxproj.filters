@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\..\src\WebServer\WebServer.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="common">
+      <UniqueIdentifier>{95676500-0b9c-48b1-8a4e-177ca4c77d5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="common\asws">
+      <UniqueIdentifier>{e2788900-1463-4460-abad-2a310ce11abe}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\src\common\asws\ws_client.h">
+      <Filter>common\asws</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\common\asws\ws_common.h">
+      <Filter>common\asws</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\common\asws\ws_config.h">
+      <Filter>common\asws</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\common\asws\ws_extensions.h">
+      <Filter>common\asws</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\common\asws\ws_packer.h">
+      <Filter>common\asws</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\common\asws\ws_server.h">
+      <Filter>common\asws</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\common\asws\wss_client.h">
+      <Filter>common\asws</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\common\asws\wss_server.h">
+      <Filter>common\asws</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
