@@ -87,37 +87,7 @@ First of all, thank you for youngwolf, this development based on ascs/asio packa
 
 - Quick Start
 
-1.server:
-
-#include "common/asws/ws_common.h"
-
-service_pump sp;
-
-#if WEB_SOCKET_SSL //with ssl
-
-	wss_server server(DEFAULT_WEB_IP, DEFAULT_WEB_PORT, sp, "./certs/server.crt", "./certs/server.key");
-	
-#else //normal
-
-  	ws_server server(DEFAULT_WEB_IP, DEFAULT_WEB_PORT, sp);
-  	
-#endif
-
-2.client:
-
-#include "common/asws/ws_common.h"
-
-	service_pump sp;
-
-#if WEB_SOCKET_SSL //with ssl
-
-	wss_client client("wss://127.0.0.1:3001", sp, "./certs/client.crt","./certs/client.key");
-	
-#else //normal
-
-	ws_client client("ws://127.0.0.1:3001", sp);
-	
-#endif
+Please look above.
 
 
 - question:
