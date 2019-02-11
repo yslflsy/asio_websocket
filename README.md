@@ -1,8 +1,7 @@
 asws (a websocket base on ascs)
-QQ:421264988
-交流QQ群:953980601
-===========================================================================
-I am chinese, so chinese takes precedence!
+QQ:421264988</br>
+交流QQ群:953980601</br>
+=======I am chinese, so chinese takes precedence!===============================</br>
 
 首先感谢 youngwolf,此 websocket 基于 ascs/asio 封装开发 .
 
