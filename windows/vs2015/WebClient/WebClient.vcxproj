@@ -165,14 +165,12 @@
     <ClCompile Include="..\..\..\src\WebClient\WebClient.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\common\asws\wss_client.h" />
-    <ClInclude Include="..\..\..\src\common\asws\wss_server.h" />
-    <ClInclude Include="..\..\..\src\common\asws\ws_client.h" />
-    <ClInclude Include="..\..\..\src\common\asws\ws_common.h" />
-    <ClInclude Include="..\..\..\src\common\asws\ws_config.h" />
-    <ClInclude Include="..\..\..\src\common\asws\ws_extensions.h" />
-    <ClInclude Include="..\..\..\src\common\asws\ws_packer.h" />
-    <ClInclude Include="..\..\..\src\common\asws\ws_server.h" />
+    <ClInclude Include="..\..\..\src\common\asio_websocket\asio_websocket.h" />
+    <ClInclude Include="..\..\..\src\common\asio_websocket\ws_base.h" />
+    <ClInclude Include="..\..\..\src\common\asio_websocket\ws_config.h" />
+    <ClInclude Include="..\..\..\src\common\asio_websocket\ws_ext.h" />
+    <ClInclude Include="..\..\..\src\common\asio_websocket\ws_packer.h" />
+    <ClInclude Include="..\..\..\src\common\common.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

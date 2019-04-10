@@ -8,11 +8,9 @@
 #ifndef __ws_extensions_h__
 #define __ws_extensions_h__
 
-#include <string>
 #include <iostream>
 #include <openssl/sha.h>
 #include <stdint.h>
-
 
 using namespace std;
 
@@ -82,23 +80,14 @@ namespace Extensions
 		{
 			if (headers)
 			{
-				for (Header *h = headers; *++h; )
-				{
-					if (h->keyLength == length && !strncmp(h->key, key, length))
-					{
-						return *h;
-					}
-				}
+				for (Header *h = headers; *++h; ) { if (h->keyLength == length && !strncmp(h->key, key, length)) { return *h; } }
 			}
 			return{ nullptr, nullptr, 0, 0 };
 		}
 
 		Header getUrl()
 		{
-			if (headers->key)
-			{
-				return *headers;
-			}
+			if (headers->key) { return *headers; }
 			return{ nullptr, nullptr, 0, 0 };
 		}
 
@@ -109,56 +98,41 @@ namespace Extensions
 			switch (headers->keyLength)
 			{
 			case 3:
-				if (!strncmp(headers->key, "get", 3))
-				{
-					return METHOD_GET;
-				}
-				else if (!strncmp(headers->key, "put", 3))
-				{
-					return METHOD_PUT;
-				}
+				if (!strncmp(headers->key, "get", 3)) { return METHOD_GET; } else if (!strncmp(headers->key, "put", 3)) { return METHOD_PUT; }
 				break;
 			case 4:
-				if (!strncmp(headers->key, "post", 4))
-				{
-					return METHOD_POST;
-				}
-				else if (!strncmp(headers->key, "head", 4))
-				{
-					return METHOD_HEAD;
-				}
+				if (!strncmp(headers->key, "post", 4)) { return METHOD_POST; } else if (!strncmp(headers->key, "head", 4)) { return METHOD_HEAD; }
 				break;
 			case 5:
-				if (!strncmp(headers->key, "patch", 5))
-				{
-					return METHOD_PATCH;
-				}
-				else if (!strncmp(headers->key, "trace", 5))
-				{
-					return METHOD_TRACE;
-				}
+				if (!strncmp(headers->key, "patch", 5)) { return METHOD_PATCH; } else if (!strncmp(headers->key, "trace", 5)) { return METHOD_TRACE; }
 				break;
 			case 6:
-				if (!strncmp(headers->key, "delete", 6))
-				{
-					return METHOD_DELETE;
-				}
+				if (!strncmp(headers->key, "delete", 6)) { return METHOD_DELETE; }
 				break;
 			case 7:
-				if (!strncmp(headers->key, "options", 7))
-				{
-					return METHOD_OPTIONS;
-				}
-				else if (!strncmp(headers->key, "connect", 7))
-				{
-					return METHOD_CONNECT;
-				}
+				if (!strncmp(headers->key, "options", 7)) { return METHOD_OPTIONS; } else if (!strncmp(headers->key, "connect", 7)) 	{ return METHOD_CONNECT; }
 				break;
 			}
 			return METHOD_INVALID;
 		}
 	};
 
+	inline uint32_t parse_url(const string &url)
+	{
+		string strtmp;
+		asio::io_context ios;
+		asio::ip::tcp::resolver slv(ios);	//创建resolver对象
+		asio::ip::basic_resolver_results<asio::ip::tcp> ret = slv.resolve(url, strtmp);	//使用resolve迭代端点
+
+		uint32_t iSize = 0;
+		for (auto itr = ret.begin(); itr != ret.end(); itr++)
+		{
+			SLOG_INFO("%s:%d", itr->endpoint().address().to_string().c_str(), itr->endpoint().port());
+			iSize++;
+		}
+
+		return iSize;
+	}
 
 	inline bool parseURI(std::string &uri, bool &ssl, std::string &hostname, int &port, std::string &path)
 	{
@@ -197,11 +171,7 @@ namespace Extensions
 			offset += hostname.length();
 		}
 
-		if (offset == uri.length())
-		{
-			path.clear();
-			return true;
-		}
+		if (offset == uri.length()) { path.clear(); return true; }
 
 		if (uri[offset] == ':')
 		{
@@ -209,14 +179,7 @@ namespace Extensions
 			std::string portStr = uri.substr(offset, uri.find('/', offset) - offset);
 			if (portStr.length())
 			{
-				try
-				{
-					port = stoi(portStr);
-				}
-				catch (...)
-				{
-					return false;
-				}
+				try { port = stoi(portStr); } catch (...) { return false; }
 			}
 			else
 			{
@@ -225,39 +188,26 @@ namespace Extensions
 			offset += portStr.length();
 		}
 
-		if (offset == uri.length())
-		{
-			path.clear();
-			return true;
-		}
+		if (offset == uri.length()) { 	path.clear(); return true; }
 
-		if (uri[offset] == '/')
-		{
-			path = uri.substr(++offset);
-		}
+		if (uri[offset] == '/') { path = uri.substr(++offset); }
 		return true;
 	}
 
 
 	inline string clientHandshakeString(const string & hostname, int port, const string &path)
 	{
+		std::string randomKey = "x3JJHMbDL1EzLkh9GBhXDw==";
 
+		string str = "GET /" + path + " HTTP/1.1\r\n"
+			"Upgrade: websocket\r\n"
+			"Connection: Upgrade\r\n"
+			"Sec-WebSocket-Key: " + randomKey + "\r\n"
+			"Host: " + hostname + ":" + std::to_string(port) + "\r\n"
+			"Sec-WebSocket-Version: 13\r\n";
 
-			std::string randomKey = "x3JJHMbDL1EzLkh9GBhXDw==";
-
-
-			string str = "GET /" + path + " HTTP/1.1\r\n"
-				"Upgrade: websocket\r\n"
-				"Connection: Upgrade\r\n"
-				"Sec-WebSocket-Key: " + randomKey + "\r\n"
-				"Host: " + hostname + ":" + std::to_string(port) + "\r\n"
-				"Sec-WebSocket-Version: 13\r\n";
-
-
-
-			str += "\r\n";
-			return str;
-
+		str += "\r\n";
+		return str;
 	}
 
 	// UNSAFETY NOTE: assumes *end == '\r' (might unref end pointer)
@@ -270,21 +220,25 @@ namespace Extensions
 					headers->key = nullptr;
 					return buffer + 2;
 				}
-				else {
+				else 
+				{
 					return nullptr;
 				}
 			}
-			else {
+			else 
+			{
 				headers->keyLength = (unsigned int)(buffer - headers->key);
 				for (buffer++; (*buffer == ':' || *buffer < 33) && *buffer != '\r'; buffer++);
 				headers->value = buffer;
 				buffer = (char *)memchr(buffer, '\r', end - buffer); //for (; *buffer != '\r'; buffer++);
-				if (buffer /*!= end*/ && buffer[1] == '\n') {
+				if (buffer /*!= end*/ && buffer[1] == '\n') 
+				{
 					headers->valueLength = (unsigned int)(buffer - headers->value);
 					buffer += 2;
 					headers++;
 				}
-				else {
+				else 
+				{
 					return nullptr;
 				}
 			}
@@ -294,9 +248,7 @@ namespace Extensions
 
 	inline string buildServerHandshakeString(const char *secKey, const char *subprotocol, size_t subprotocolLength)
 	{
-
 		std::string extensionsResponse;
-
 
 		unsigned char shaInput[] = "XXXXXXXXXXXXXXXXXXXXXXXX258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 		memcpy(shaInput, secKey, 24);
@@ -326,6 +278,7 @@ namespace Extensions
 				break;
 			}
 		}
+
 		if (subprotocolLength && subprotocolLength < 200) 
 		{
 			memcpy(upgradeBuffer + upgradeResponseLength, "Sec-WebSocket-Protocol: ", 24);

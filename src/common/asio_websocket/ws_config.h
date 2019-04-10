@@ -14,7 +14,6 @@
 #define ASIO_STANDALONE						//不依赖 boost
 #define ASCS_REUSE_SSL_STREAM				//ssl socket重连
 
-#define ASCS_SYNC_RECV
 
 #define ASCS_FORCE_TO_USE_MSG_RECV_BUFFER 
 
@@ -31,7 +30,7 @@
 #define ASCS_USE_STEADY_TIMER
 #define ASCS_ALIGNED_TIMER
 //#define ASCS_AVOID_AUTO_STOP_SERVICE
-#define ASCS_DECREASE_THREAD_AT_RUNTIME
+//#define ASCS_DECREASE_THREAD_AT_RUNTIME
 
 
 #include "ascs/base.h"
@@ -44,8 +43,8 @@
 using namespace std;
 
 
-#define ASWS_VER		10000	
-#define ASWS_VERSION	"1.0.0"
+#define ASWS_VER		10100	
+#define ASWS_VERSION	"1.1.0"
 
 
 
@@ -56,11 +55,11 @@ using namespace std;
 #define SLOG_INFO(fmt, ...)			{}
 #define SLOG_DEBUG(fmt, ...)		{}
 #else
-#define SLOG_FATAL(fmt, ...)		unified_out::fatal_out(fmt, ##__VA_ARGS__)
-#define SLOG_ERROR(fmt, ...)		unified_out::error_out(fmt, ##__VA_ARGS__)
-#define SLOG_WARN(fmt, ...)			unified_out::warning_out(fmt, ##__VA_ARGS__)
-#define SLOG_INFO(fmt, ...)			unified_out::info_out(fmt, ##__VA_ARGS__)
-#define SLOG_DEBUG(fmt, ...)		unified_out::debug_out(fmt, ##__VA_ARGS__)
+#define SLOG_FATAL(fmt, ...)		ascs::unified_out::fatal_out(fmt, ##__VA_ARGS__)
+#define SLOG_ERROR(fmt, ...)		ascs::unified_out::error_out(fmt, ##__VA_ARGS__)
+#define SLOG_WARN(fmt, ...)			ascs::unified_out::warning_out(fmt, ##__VA_ARGS__)
+#define SLOG_INFO(fmt, ...)			ascs::unified_out::info_out(fmt, ##__VA_ARGS__)
+#define SLOG_DEBUG(fmt, ...)		ascs::unified_out::debug_out(fmt, ##__VA_ARGS__)
 #endif
 
 

@@ -8,7 +8,7 @@
 #ifndef __ws_unpacker_h__
 #define __ws_unpacker_h__
 #include "ascs/ext/ext.h"
-#include "ws_extensions.h"
+#include "ws_ext.h"
 
 
 using namespace ascs;
@@ -49,7 +49,6 @@ enum OpCode : unsigned char
 	eOpCode_PING = 9,	//0x9表示ping
 	eOpCode_PONG = 10,	//0xA表示pong
 						//0xB - F暂时无定义，为以后的控制帧保留
-
 };
 
 enum SND_CODE
@@ -70,6 +69,7 @@ struct WsMsg_info
 
 	bool hasMask;//是否有掩码 data[1]>>7
 
+				 //Other-->
 	char mask[MASK_LEN];//掩码
 	char *pData;//指向真实数据(动态分配,自动管理);其长度为 Len
 	uint64_t Len;//真实数据长度  (data[1] & 0x7f)计算出来的数据长度
@@ -97,12 +97,17 @@ struct WsMsg_info
 
 struct ws_message : public std::string
 {
-	ws_message():opcode(eOpCode_TEXT) {}
-	ws_message(const char* data, size_t size, OpCode code) :std::string(data, size), opcode(code) {  }
-	void swap(ws_message &other) { string::swap(other); opcode = other.opcode; }
-	void clear() { opcode = eOpCode_TEXT; std::string::clear(); }
-	OpCode  opcode;
+	ws_message():opcode(eOpCode_TEXT), bAppend(false){}
+	ws_message(const char* data, size_t size, OpCode code) :std::string(data, size), opcode(code), bAppend(false){  }
+	void swap(ws_message &other) { string::swap(other); opcode = other.opcode; bAppend = other.bAppend; }
+	void clear() { opcode = eOpCode_TEXT; std::string::clear(); bAppend = false; }
 
+	//把opcode合并到消息未尾,packer时用
+	const char* packcode() { if (!bAppend) { std::string::push_back((unsigned char)opcode); bAppend = true; } return data(); }
+	size_t getlen() { return bAppend ? size() - 1 : size(); }
+	
+	OpCode  opcode;
+	bool    bAppend;
 };
 
 
@@ -110,7 +115,8 @@ class ws_packer : public i_packer<ws_message>
 {
 public:
 	static size_t get_max_msg_size() { return ASCS_MSG_BUFFER_SIZE - ASCS_HEAD_LEN; }
-	ws_packer() :m_bHandshaked(false), isServer(true){}
+
+	ws_packer() :m_bHandshaked(false), isServer(true){ memset(msg_data, 0, ASCS_MSG_BUFFER_SIZE); }
 	using i_packer<msg_type>::pack_msg;
 	void setIsServer(bool bset) { isServer = bset; }
 	virtual void reset() { m_bHandshaked = false; }
@@ -120,9 +126,12 @@ public:
 		msg_type msg;
 		for (int iIndex = 0; iIndex < num; iIndex++)
 		{
+			if (pstr[iIndex] == nullptr || len[iIndex] == 0) continue;
+
 			if (m_bHandshaked)//已握手
 			{
-				uint64_t msglen = formatMessage(msg_data, (const char*)pstr[iIndex], len[iIndex], eOpCode_TEXT, len[iIndex], isServer);
+				uint8_t opcode = ((char*)(pstr[iIndex]))[len[iIndex]];//最后一位记录消息类型
+				uint64_t msglen = formatMessage(msg_data, (const char*)pstr[iIndex], len[iIndex], (OpCode)opcode, len[iIndex], isServer);
 				msg.append(msg_data, msglen);
 			}
 			else
@@ -231,7 +240,7 @@ public:
 	{
 		if (m_bHandshaked)
 		{
-			return parse_msg2(bytes_transferred, msg_can);
+			return do_parse_msg(bytes_transferred, msg_can);
 		}
 		else
 		{
@@ -241,7 +250,7 @@ public:
 		//if unpacking failed, successfully parsed msgs will still returned via msg_can(sticky package), please note.
 	}
 
-	bool parse_msg2(size_t bytes_transferred, container_type& msg_can)
+	bool do_parse_msg(size_t bytes_transferred, container_type& msg_can)
 	{
 
 		//length + msg
@@ -336,7 +345,8 @@ public:
 		}
 		else if (msg_info.Len == 126)//126，后面2个字节形成的16位无符号整型数(unsigned short)的值是payload的真实长度，掩码就紧更着后面,此消息最大长度为65535字节
 		{
-			msg_info.Len = (unsigned short)(data[2] << 8 | data[3]);// ntohll(u.n);//网络字节转换
+			uint16_t head = *((uint16_t*)(data + 2));
+			msg_info.Len = htons(head);// (uint16_t)(data[2] << 8 | data[3]);// ntohll(u.n);//网络字节转换
 			headlen = (msg_info.hasMask) ? 8 : 4;
 		}
 		else if (msg_info.Len == 127)//127，后面8个字节形成的64位无符号整型数(unsigned int64)的值是payload的真实长度，掩码就紧更着后面,此消息最大长度为uint64最大值

@@ -7,34 +7,28 @@
     <Filter Include="common">
       <UniqueIdentifier>{95676500-0b9c-48b1-8a4e-177ca4c77d5e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="common\asws">
+    <Filter Include="common\asio_websocket">
       <UniqueIdentifier>{e2788900-1463-4460-abad-2a310ce11abe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\src\common\asws\ws_client.h">
-      <Filter>common\asws</Filter>
+    <ClInclude Include="..\..\..\src\common\common.h">
+      <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\common\asws\ws_common.h">
-      <Filter>common\asws</Filter>
+    <ClInclude Include="..\..\..\src\common\asio_websocket\asio_websocket.h">
+      <Filter>common\asio_websocket</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\common\asws\ws_config.h">
-      <Filter>common\asws</Filter>
+    <ClInclude Include="..\..\..\src\common\asio_websocket\ws_base.h">
+      <Filter>common\asio_websocket</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\common\asws\ws_extensions.h">
-      <Filter>common\asws</Filter>
+    <ClInclude Include="..\..\..\src\common\asio_websocket\ws_config.h">
+      <Filter>common\asio_websocket</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\common\asws\ws_packer.h">
-      <Filter>common\asws</Filter>
+    <ClInclude Include="..\..\..\src\common\asio_websocket\ws_ext.h">
+      <Filter>common\asio_websocket</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\common\asws\ws_server.h">
-      <Filter>common\asws</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\common\asws\wss_client.h">
-      <Filter>common\asws</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\common\asws\wss_server.h">
-      <Filter>common\asws</Filter>
+    <ClInclude Include="..\..\..\src\common\asio_websocket\ws_packer.h">
+      <Filter>common\asio_websocket</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

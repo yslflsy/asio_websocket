@@ -1,0 +1,82 @@
+请在Linux下使用
+配置信息:
+Country Name (2 letter code) [XX]:cn
+State or Province Name (full name) []:gd
+Locality Name (eg, city) [Default City]:gz
+Organization Name (eg, company) [Default Company Ltd]:companyname
+Organizational Unit Name (eg, section) []:companysection
+Common Name (eg, your name or your server's hostname) []:companyname.com
+Email Address []:companyname@qq.com
+
+==制作带双向认证证书==============================================================
+===========制作根证书===========
+1. 生成CA私钥:ca.key （这个是信任的起点,根证书,所有其他的证书都要经过CA的私钥签名）
+openssl genrsa -des3 -out ca.key 2048
+
+2. 生成 CA根证书的公钥:ca.crt
+openssl req -new -x509 -days 9990 -key ca.key -out ca.crt
+
+
+===========制作服务端证书===========
+1. 生成证书私钥:server.pem
+openssl genrsa -des3 -out server.pem 1024
+
+2.生成无密码的私钥:server.key
+openssl rsa -in server.pem -out server.key
+
+3. 生成签发请求:server.csr
+openssl req -new -key server.pem -out server.csr
+
+4. 最后用CA证书给证书进行签名
+openssl x509 -req -sha256 -in server.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 99999 -out server.crt
+
+===========制作客户端证书===========
+1. 生成证书私钥:client.pem
+openssl genrsa -des3 -out client.pem 1024
+
+2.生成无密码的私钥:client.key
+openssl rsa -in client.pem -out client.key
+
+3. 生成签发请求:client.csr
+openssl req -new -key client.pem -out client.csr
+
+4. 最后用CA证书给证书进行签名
+openssl x509 -req -sha256 -in client.csr -CA ca.crt -CAkey ca.key -CAcreateserial -days 99999 -out client.crt
+
+
+==制作带密码的单向认证证书==============================================================
+
+首先得安装OpenSSL软件包openssl，安装了这个软件包之后，我们可以做这些事情：
+o Creation of RSA, DH and DSA Key Parameters # 创建密钥 key
+o Creation of X.509 Certificates, CSRs and CRLs # 创建证书
+o Calculation of Message Digests #
+o Encryption and Decryption with Ciphers # 加密、解密
+o SSL/TLS Client and Server Tests # SSL 服务器端/客户端测试
+o Handling of S/MIME signed or encrypted Mail # 处理签名或加密了的邮件
+
+1、生成RSA密钥的方法
+
+openssl genrsa -des3 -out privkey.pem 2048
+这个命令会生成一个2048位的密钥，同时有一个des3方法加密的密码，如果你不想要每次都输入密码，可以改成：
+openssl genrsa -out privkey.pem 2048
+建议用2048位密钥，少于此可能会不安全或很快将不安全。
+
+2、生成一个证书请求
+openssl req -new -key privkey.pem -out cert.csr
+这个命令将会生成一个证书请求，当然，用到了前面生成的密钥privkey.pem文件
+这里将生成一个新的文件cert.csr，即一个证书请求文件，你可以拿着这个文件去数字证书颁发机构（即CA）申请一个数字证书。CA会给你一个新的文件cacert.pem，那才是你的数字证书。
+
+如果是自己做测试，那么证书的申请机构和颁发机构都是自己。就可以用下面这个命令来生成证书：
+openssl req -new -x509 -key privkey.pem -out cacert.pem -days 99999
+这个命令将用上面生成的密钥privkey.pem生成一个数字证书cacert.pem
+
+3、使用数字证书和密钥
+有了privkey.pem和cacert.pem文件后就可以在自己的程序中使用了，比如做一个加密通讯的服务器
+
+
+
+
+
+
+
+
