@@ -15,7 +15,6 @@ int main(int argc, char **argv)
 	ws_message tempMsg;
 	service_pump sp;
 
-
 #if WSS
 
 

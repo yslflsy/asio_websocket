@@ -1,15 +1,29 @@
 ﻿/*
-* ws_config.h
+*	ws_config.h
 *
 *	Created on: 2019-1-2
 *	Author: qiyun
 *	QQ: 421264988
 *	Community on QQ: 953980601
-*	git:https://github.com/yslflsy/asws.git
+*	git:https://github.com/yslflsy/asio_websocket.git
 */
 
 #ifndef __WS_CONFIG_H__
 #define __WS_CONFIG_H__
+
+//2019/02/3 ver1.0.0
+//第一个版本
+
+
+
+/*2019/04/10 ver1.1.0
+1.调整架构,使用模块减少代码量
+2.支持 ssl 单向验证
+
+*/
+#define ASWS_VER		10100	
+#define ASWS_VERSION	"1.1.0"
+
 
 #define ASIO_STANDALONE						//不依赖 boost
 #define ASCS_REUSE_SSL_STREAM				//ssl socket重连
@@ -41,10 +55,6 @@
 
 
 using namespace std;
-
-
-#define ASWS_VER		10100	
-#define ASWS_VERSION	"1.1.0"
 
 
 

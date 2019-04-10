@@ -1,11 +1,11 @@
 ﻿/*
 * asio_websocket.h
 *
-*	Created on: 2019-1-2
+*	Created on: 2019-4-2
 *	Author: qiyun
 *	QQ: 421264988
 *	Community on QQ: 953980601
-*	git:https://github.com/yslflsy/asws.git
+*	git:https://github.com/yslflsy/asio_websocket.git
 */
 
 #ifndef __ASIO_WEBSOCKET_H__
